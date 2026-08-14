@@ -19,7 +19,8 @@ export function ScreenContainer({
 }: ScreenContainerProps) {
   const insets = useSafeAreaInsets();
 
-  const paddingStyle = {
+  const safeAreaStyle = {
+    flex: 1,
     paddingTop: insets.top,
     paddingBottom: insets.bottom,
   };
@@ -40,14 +41,18 @@ export function ScreenContainer({
 
   if (withGradient) {
     return (
-      <View style={[styles.wrapper, paddingStyle]}>
+      <View style={styles.wrapper}>
         <LinearGradient colors={['#0A0A0A', '#000000']} style={StyleSheet.absoluteFill} />
-        {inner}
+        <View style={safeAreaStyle}>{inner}</View>
       </View>
     );
   }
 
-  return <View style={[styles.wrapper, styles.root, paddingStyle]}>{inner}</View>;
+  return (
+    <View style={styles.wrapper}>
+      <View style={safeAreaStyle}>{inner}</View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

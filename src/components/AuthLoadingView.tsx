@@ -44,7 +44,7 @@ export function AuthLoadingView() {
       <Animated.View style={[styles.logoWrap, logoStyle]}>
         <Image
           accessibilityIgnoresInvertColors
-          source={require('../../assets/icon.png')}
+          source={require('../../assets/logo.png')}
           style={styles.logo}
         />
       </Animated.View>
@@ -55,7 +55,7 @@ export function AuthLoadingView() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.backgroundBottom,
+    backgroundColor: colors.darkBg,
     flex: 1,
     justifyContent: 'center',
   },

@@ -4,9 +4,16 @@
   "main": "expo-router/entry",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@11.21.0",
+  "engines": {
+    "node": ">=22.13.0",
+    "pnpm": ">=11.0.0"
+  },
   "scripts": {
-    "start": "expo start --web",
+    "dev": "expo start --web",
     "web": "expo start --web",
+    "build": "expo export --platform web",
+    "build:preview": "pnpm dlx serve dist",
     "lint": "expo lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

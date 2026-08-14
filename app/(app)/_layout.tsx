@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Redirect, Tabs } from 'expo-router';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../../src/auth/AuthProvider';
 import { colors } from '../../src/theme/colors';
 
 export default function AppLayout() {
   const { status } = useAuth();
+  const insets = useSafeAreaInsets();
 
   if (status === 'loading') {
     return (
@@ -27,7 +29,7 @@ export default function AppLayout() {
         tabBarInactiveTintColor: colors.darkTextMuted,
         tabBarStyle: {
           position: 'absolute',
-          bottom: 24,
+          bottom: insets.bottom + 24,
           left: 24,
           right: 24,
           height: 64,
