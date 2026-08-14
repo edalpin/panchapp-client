@@ -9,15 +9,16 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { clearAccessToken, getAccessToken, setAccessToken } from './authStorage';
 import {
   GoogleSignInCancelledError,
+  hasGoogleRedirectCallback,
   signInWithGoogleIdToken,
   signOutFromGoogle,
 } from './googleSignIn';
 import { createApolloClient } from '../graphql/client';
 import {
   LOGIN_WITH_GOOGLE,
+  LOGOUT,
   ME,
   type LoginWithGoogleMutation,
   type LoginWithGoogleMutationVariables,
@@ -30,7 +31,6 @@ export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
 type AuthContextValue = {
   status: AuthStatus;
   user: User | null;
-  accessToken: string | null;
   isSigningIn: boolean;
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -45,12 +45,9 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [status, setStatus] = useState<AuthStatus>('loading');
   const [user, setUser] = useState<User | null>(null);
-  const [accessToken, setAccessTokenState] = useState<string | null>(null);
   const [isSigningIn, setIsSigningIn] = useState(false);
 
-  const handleUnauthenticated = useCallback(async () => {
-    await clearAccessToken();
-    setAccessTokenState(null);
+  const handleSessionExpired = useCallback(() => {
     setUser(null);
     setStatus('unauthenticated');
   }, []);
@@ -58,29 +55,63 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const apolloClient = useMemo(
     () =>
       createApolloClient({
-        onUnauthenticated: () => {
-          void handleUnauthenticated();
-        },
+        onSessionExpired: handleSessionExpired,
       }),
-    [handleUnauthenticated],
+    [handleSessionExpired],
+  );
+
+  const completeGoogleLogin = useCallback(
+    async (idToken: string) => {
+      const { data } = await apolloClient.mutate<
+        LoginWithGoogleMutation,
+        LoginWithGoogleMutationVariables
+      >({
+        mutation: LOGIN_WITH_GOOGLE,
+        variables: {
+          input: { idToken },
+        },
+      });
+
+      if (!data?.loginWithGoogle) {
+        throw new Error('Login failed.');
+      }
+
+      setUser(data.loginWithGoogle.user);
+      setStatus('authenticated');
+    },
+    [apolloClient],
   );
 
   useEffect(() => {
     let cancelled = false;
 
     async function bootstrap() {
-      const storedToken = await getAccessToken();
+      if (hasGoogleRedirectCallback()) {
+        setIsSigningIn(true);
 
-      if (cancelled) {
+        try {
+          const idToken = await signInWithGoogleIdToken();
+
+          if (cancelled) {
+            return;
+          }
+
+          await completeGoogleLogin(idToken);
+        } catch {
+          if (cancelled) {
+            return;
+          }
+
+          setUser(null);
+          setStatus('unauthenticated');
+        } finally {
+          if (!cancelled) {
+            setIsSigningIn(false);
+          }
+        }
+
         return;
       }
-
-      if (!storedToken) {
-        setStatus('unauthenticated');
-        return;
-      }
-
-      setAccessTokenState(storedToken);
 
       try {
         const { data } = await apolloClient.query<MeQuery>({
@@ -103,8 +134,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
           return;
         }
 
-        await clearAccessToken();
-        setAccessTokenState(null);
         setUser(null);
         setStatus('unauthenticated');
       }
@@ -115,42 +144,29 @@ export function AuthProvider({ children }: AuthProviderProps) {
     return () => {
       cancelled = true;
     };
-  }, [apolloClient]);
+  }, [apolloClient, completeGoogleLogin]);
 
   const signInWithGoogle = useCallback(async () => {
     setIsSigningIn(true);
 
     try {
       const idToken = await signInWithGoogleIdToken();
-      const { data } = await apolloClient.mutate<
-        LoginWithGoogleMutation,
-        LoginWithGoogleMutationVariables
-      >({
-        mutation: LOGIN_WITH_GOOGLE,
-        variables: {
-          input: { idToken },
-        },
-      });
-
-      if (!data?.loginWithGoogle) {
-        throw new Error('Login failed.');
-      }
-
-      const { accessToken: token, user: authenticatedUser } = data.loginWithGoogle;
-
-      await setAccessToken(token);
-      setAccessTokenState(token);
-      setUser(authenticatedUser);
-      setStatus('authenticated');
+      await completeGoogleLogin(idToken);
     } finally {
       setIsSigningIn(false);
     }
-  }, [apolloClient]);
+  }, [completeGoogleLogin]);
 
   const signOut = useCallback(async () => {
+    try {
+      await apolloClient.mutate({
+        mutation: LOGOUT,
+      });
+    } catch {
+      // Continue local cleanup even if server logout fails.
+    }
+
     await signOutFromGoogle();
-    await clearAccessToken();
-    setAccessTokenState(null);
     setUser(null);
     setStatus('unauthenticated');
     await apolloClient.clearStore();
@@ -160,12 +176,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     () => ({
       status,
       user,
-      accessToken,
       isSigningIn,
       signInWithGoogle,
       signOut,
     }),
-    [status, user, accessToken, isSigningIn, signInWithGoogle, signOut],
+    [status, user, isSigningIn, signInWithGoogle, signOut],
   );
 
   return (

@@ -7,7 +7,6 @@ export type User = {
 };
 
 export type AuthPayload = {
-  accessToken: string;
   user: User;
 };
 
@@ -18,13 +17,30 @@ export type LoginWithGoogleInput = {
 export const LOGIN_WITH_GOOGLE = gql`
   mutation LoginWithGoogle($input: LoginWithGoogleInput!) {
     loginWithGoogle(input: $input) {
-      accessToken
       user {
         id
         email
         name
       }
     }
+  }
+`;
+
+export const REFRESH_SESSION = gql`
+  mutation RefreshSession {
+    refreshSession {
+      user {
+        id
+        email
+        name
+      }
+    }
+  }
+`;
+
+export const LOGOUT = gql`
+  mutation Logout {
+    logout
   }
 `;
 
@@ -44,6 +60,14 @@ export type LoginWithGoogleMutation = {
 
 export type LoginWithGoogleMutationVariables = {
   input: LoginWithGoogleInput;
+};
+
+export type RefreshSessionMutation = {
+  refreshSession: AuthPayload;
+};
+
+export type LogoutMutation = {
+  logout: boolean;
 };
 
 export type MeQuery = {

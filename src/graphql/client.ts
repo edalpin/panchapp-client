@@ -1,31 +1,23 @@
 import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client';
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
-import { setContext } from '@apollo/client/link/context';
 import { ErrorLink } from '@apollo/client/link/error';
+import { Observable } from '@apollo/client/utilities';
+import { refreshSessionSingleFlight } from '../auth/refreshSession';
 import { env } from '../config/env';
-import { getInMemoryAccessToken } from '../auth/authStorage';
+
+const AUTH_OPERATIONS_WITHOUT_REFRESH = new Set(['LoginWithGoogle', 'RefreshSession', 'Logout']);
 
 export type CreateApolloClientOptions = {
-  onUnauthenticated?: () => void;
+  onSessionExpired?: () => void;
 };
 
-export function createApolloClient({ onUnauthenticated }: CreateApolloClientOptions = {}) {
+export function createApolloClient({ onSessionExpired }: CreateApolloClientOptions = {}) {
   const httpLink = new HttpLink({
     uri: env.graphqlUrl,
+    credentials: 'include',
   });
 
-  const authLink = setContext((_, { headers }) => {
-    const token = getInMemoryAccessToken();
-
-    return {
-      headers: {
-        ...headers,
-        ...(token ? { authorization: `Bearer ${token}` } : {}),
-      },
-    };
-  });
-
-  const errorLink = new ErrorLink(({ error }) => {
+  const errorLink = new ErrorLink(({ error, operation, forward }) => {
     if (!CombinedGraphQLErrors.is(error)) {
       return;
     }
@@ -34,13 +26,48 @@ export function createApolloClient({ onUnauthenticated }: CreateApolloClientOpti
       (graphQLError) => graphQLError.extensions?.code === 'UNAUTHENTICATED',
     );
 
-    if (isUnauthenticated) {
-      onUnauthenticated?.();
+    if (!isUnauthenticated) {
+      return;
     }
+
+    const operationName = operation.operationName;
+
+    if (operationName && AUTH_OPERATIONS_WITHOUT_REFRESH.has(operationName)) {
+      return;
+    }
+
+    const context = operation.getContext();
+
+    if (context.authRetry) {
+      onSessionExpired?.();
+      return;
+    }
+
+    return new Observable((observer) => {
+      let innerSubscription: { unsubscribe: () => void } | undefined;
+
+      refreshSessionSingleFlight()
+        .then(() => {
+          operation.setContext({ ...context, authRetry: true });
+          innerSubscription = forward(operation).subscribe({
+            next: (value) => observer.next(value),
+            error: (err) => observer.error(err),
+            complete: () => observer.complete(),
+          });
+        })
+        .catch(() => {
+          onSessionExpired?.();
+          observer.error(error);
+        });
+
+      return () => {
+        innerSubscription?.unsubscribe();
+      };
+    });
   });
 
   return new ApolloClient({
-    link: ApolloLink.from([errorLink, authLink, httpLink]),
+    link: ApolloLink.from([errorLink, httpLink]),
     cache: new InMemoryCache({
       typePolicies: {
         User: {

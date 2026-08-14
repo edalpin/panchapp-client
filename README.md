@@ -39,9 +39,11 @@ Configure the Web OAuth client:
 
 Login only works for users already registered in the API database. Insert a `User` row with your Google email before signing in for the first time.
 
-### API CORS
+### API CORS and cookies
 
 Browser requests from `http://localhost:8081` to the GraphQL API require CORS to be enabled on [`panchapp-api`](../panchapp-api/). Configure the API to allow the web dev origin before testing login in the browser.
+
+The client sends credentialed requests (`credentials: 'include'`), so the API must also allow credentials for that origin. Cookie attributes (`Secure`, `HttpOnly`, `SameSite`, domain, path) and any CSRF policy are owned by the API and must match your client/API origin topology in each environment.
 
 ## Run
 
@@ -49,17 +51,17 @@ Browser requests from `http://localhost:8081` to the GraphQL API require CORS to
 pnpm dev
 ```
 
-This opens the app in your browser. Google sign-in uses `expo-auth-session` and stores the JWT in `localStorage`.
+This opens the app in your browser. Google sign-in uses `expo-auth-session`, and the API establishes an HttpOnly cookie session.
 
 > **PWA note:** Install-to-home-screen only works with the **production build** (`pnpm build`), not the dev server. See [Install as PWA (iPhone)](#install-as-pwa-iphone) below.
 
 ## Auth flow
 
-1. App reads the stored JWT from `localStorage` on launch.
-2. If a token exists, it validates the session with the GraphQL `me` query.
-3. Otherwise, the login screen prompts for Google sign-in.
-4. The app sends the Google idToken to `loginWithGoogle`, stores the returned JWT, and navigates to home.
-5. Sign out clears the local session.
+1. App bootstraps by calling the GraphQL `me` query with browser cookies.
+2. If the access cookie is missing or expired, the client calls `refreshSession` once and retries the original request.
+3. If no valid session exists, the login screen prompts for Google sign-in.
+4. The app sends the Google idToken to `loginWithGoogle`; the API sets session cookies and returns the current user.
+5. Sign out calls the GraphQL `logout` mutation to revoke the server session, then clears local app state.
 
 GraphQL endpoint when [`panchapp-api`](../panchapp-api/) is running locally:
 
@@ -75,7 +77,8 @@ http://localhost:3000/graphql
 4. Run `pnpm dev` and sign in with Google.
 5. Confirm the home screen shows your name/email.
 6. Refresh the browser — session should restore without signing in again.
-7. Sign out — you should return to the login screen.
+7. Sign out — you should return to the login screen and subsequent requests should require login again.
+8. Confirm GraphQL requests include cookies, do not send an `Authorization` header, and the app never reads or writes auth tokens in `localStorage`.
 
 ## Build for production
 

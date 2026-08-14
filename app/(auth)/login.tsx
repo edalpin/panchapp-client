@@ -11,7 +11,6 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { getAuthErrorMessage, useAuth } from '../../src/auth/AuthProvider';
-import { hasGoogleRedirectCallback } from '../../src/auth/googleSignIn';
 import { AnimatedEntrance } from '../../src/components/AnimatedEntrance';
 import { GoogleSignInButton } from '../../src/components/GoogleSignInButton';
 import { colors } from '../../src/theme/colors';
@@ -35,20 +34,6 @@ export default function LoginScreen() {
         setErrorMessage(message);
       }
     }
-  }, [signInWithGoogle]);
-
-  useEffect(() => {
-    if (!hasGoogleRedirectCallback()) {
-      return;
-    }
-
-    void signInWithGoogle().catch((error) => {
-      const message = getAuthErrorMessage(error);
-
-      if (message) {
-        setErrorMessage(message);
-      }
-    });
   }, [signInWithGoogle]);
 
   useEffect(() => {
