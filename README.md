@@ -45,6 +45,8 @@ Browser requests from `http://localhost:8081` to the GraphQL API require CORS to
 
 The client sends credentialed requests (`credentials: 'include'`), so the API must also allow credentials for that origin. Cookie attributes (`Secure`, `HttpOnly`, `SameSite`, domain, path) and any CSRF policy are owned by the API and must match your client/API origin topology in each environment.
 
+**Production (iOS PWA):** the PWA must call GraphQL on the **same origin** as the client (`/graphql` via Caddy reverse proxy). Cross-origin cookies to a separate API subdomain are blocked by iOS Safari and standalone PWAs. See [Deploy to Railway](#deploy-to-railway).
+
 ## Run
 
 ```bash
@@ -116,32 +118,48 @@ If browser bars still appear, verify Railway has `RAILPACK_SPA_OUTPUT_DIR=dist` 
 
 ## Deploy to Railway
 
-Railway's default builder (Railpack) detects the `build` script, runs `pnpm build`, and serves the `dist/` folder as a static SPA.
+Production URLs:
+
+| Service      | Public URL                                       |
+| ------------ | ------------------------------------------------ |
+| Client (PWA) | `https://client-production-536a.up.railway.app`  |
+| API          | `https://panchapp-api-production.up.railway.app` |
+
+The PWA calls **`/graphql` on the client origin** (same-origin). [`Caddyfile`](Caddyfile) proxies that path to the API over [Railway private networking](https://docs.railway.com/networking/private-networking). HttpOnly session cookies are stored for the client hostname — required for iOS Safari and home-screen PWAs.
+
+Railway's default builder (Railpack) detects the `build` script, runs `pnpm build`, and serves the `dist/` folder via the custom Caddyfile.
 
 ### Client service
 
-1. Create a new Railway service connected to this repo.
-2. Railway reads [`railway.toml`](railway.toml) for the build command and health check. [`Staticfile`](Staticfile) enables SPA routing from `dist/`.
-3. Set these environment variables (required at **build** time):
+1. Create a Railway service connected to this repo.
+2. Railway reads [`railway.toml`](railway.toml) for the build command and health check. [`Staticfile`](Staticfile) and [`Caddyfile`](Caddyfile) configure SPA routing and the `/graphql` proxy.
+3. Set these environment variables:
 
-| Variable                           | Example                                                  |
-| ---------------------------------- | -------------------------------------------------------- |
-| `EXPO_PUBLIC_GRAPHQL_URL`          | `https://panchapp-api-production.up.railway.app/graphql` |
-| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | Same Web OAuth client ID used locally                    |
-| `RAILPACK_SPA_OUTPUT_DIR`          | `dist`                                                   |
+| Variable                           | When             | Example                                                                |
+| ---------------------------------- | ---------------- | ---------------------------------------------------------------------- |
+| `EXPO_PUBLIC_GRAPHQL_URL`          | **Build** time   | `/graphql`                                                             |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` | **Build** time   | Same Web OAuth client ID used locally                                  |
+| `RAILPACK_SPA_OUTPUT_DIR`          | Deploy           | `dist`                                                                 |
+| `API_PRIVATE_HOST`                 | Deploy (runtime) | `${{panchapp-api.RAILWAY_PRIVATE_DOMAIN}}` — use your API service name |
+| `API_PORT`                         | Deploy (runtime) | `3000`                                                                 |
 
-3. Deploy — Railway runs `pnpm build` and serves `dist/` via Caddy with SPA fallback.
+4. Deploy — Railway runs `pnpm build` and serves `dist/` with Caddy. GraphQL requests go to `https://client-production-536a.up.railway.app/graphql`.
 
 ### API service (panchapp-api)
 
-Set on the API Railway service:
+Set on the API Railway service (after the client proxy is live):
 
-| Variable           | Value                                                                                    |
-| ------------------ | ---------------------------------------------------------------------------------------- |
-| `CORS_ORIGIN`      | `https://panchapp-client-production.up.railway.app` (comma-separate if multiple origins) |
-| `GOOGLE_CLIENT_ID` | Same value as `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`                                         |
+| Variable           | Value                                            |
+| ------------------ | ------------------------------------------------ |
+| `CORS_ORIGIN`      | `https://client-production-536a.up.railway.app`  |
+| `COOKIE_SAME_SITE` | `lax`                                            |
+| `COOKIE_SECURE`    | `true`                                           |
+| `TRUST_PROXY`      | `true`                                           |
+| `GOOGLE_CLIENT_ID` | Same value as `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` |
 
-The browser calls the API directly, so `EXPO_PUBLIC_GRAPHQL_URL` must be the API's **public Railway URL**, not an internal hostname.
+Do **not** use `COOKIE_SAME_SITE=none` in proxied production — cookies are first-party via the client origin. Local dev still uses cross-origin (`localhost:8081` → `localhost:3000`) and needs `COOKIE_SAME_SITE=none` on the API.
+
+The API public URL remains available for admin and health checks; the PWA no longer calls it directly for GraphQL.
 
 ### Google Cloud OAuth (production)
 
@@ -151,3 +169,19 @@ In Google Cloud Console, update your **Web OAuth client**:
 - **Authorized redirect URIs**: the same origin (with and without trailing slash)
 
 After first deploy, confirm the exact redirect URI if sign-in fails — `AuthSession.makeRedirectUri()` resolves to the current page origin on web.
+
+## Verify production auth (iPhone PWA)
+
+After deploying the client proxy and updating API env vars:
+
+1. Delete any existing home-screen shortcut.
+2. Open `https://client-production-536a.up.railway.app` in **Safari** and add to home screen.
+3. Launch from the home-screen icon and sign in with Google.
+4. Confirm the home screen shows your name/email and does **not** redirect back to login.
+5. Refresh the PWA — session should persist.
+
+With Safari Web Inspector (Mac → Develop → iPhone → PWA):
+
+1. On `loginWithGoogle`: `Set-Cookie` for `panchapp_access_token` / `panchapp_refresh_token` scoped to **client-production-536a.up.railway.app** (not the API domain).
+2. On the next `me` request to `/graphql`: confirm a `Cookie` header is sent.
+3. Safari tab and home-screen PWA should behave the same.

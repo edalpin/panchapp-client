@@ -1,0 +1,51 @@
+# Custom Caddyfile for Railpack SPA deploy — overrides the generated template.
+# See https://docs.railway.com/guides/spa-routing-configuration
+
+{
+	admin off
+	persist_config off
+	auto_https off
+
+	log {
+		format json
+	}
+
+	servers {
+		trusted_proxies static private_ranges 100.0.0.0/8
+	}
+}
+
+:{$PORT:80} {
+	log {
+		format json
+	}
+
+	respond /health 200
+
+	header {
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	# Same-origin GraphQL — proxy to API over Railway private networking.
+	# Set API_PRIVATE_HOST to your API service RAILWAY_PRIVATE_DOMAIN (see README).
+	handle /graphql* {
+		reverse_proxy {$API_PRIVATE_HOST}:{$API_PORT:3000}
+	}
+
+	handle {
+		root * dist
+
+		file_server {
+			hide .git
+			hide .env*
+		}
+
+		encode {
+			gzip
+			zstd
+		}
+
+		try_files {path} {path}.html {path}/index.html /index.html
+	}
+}
