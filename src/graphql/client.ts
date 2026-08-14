@@ -46,6 +46,9 @@ export function createApolloClient({ onUnauthenticated }: CreateApolloClientOpti
         User: {
           keyFields: ['id'],
         },
+        Group: {
+          keyFields: ['id'],
+        },
       },
     }),
     defaultOptions: {

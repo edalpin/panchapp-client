@@ -13,9 +13,15 @@ export const colors = {
 
   // Elegant Dark Palette
   darkBg: '#000000',
-  darkSurface: '#111827',
-  darkText: '#f8fafc',
-  darkTextMuted: '#94a3b8',
-  darkBorder: '#1f2937',
-  accent: '#f59e0b', // Matches the cat's orange-ish hue
+  darkSurface: '#0A0A0A',
+  darkSurfaceElevated: '#141414',
+  darkText: '#FFFFFF',
+  darkTextMuted: '#A1A1AA',
+  darkBorder: '#1F1F1F',
+  accent: '#F59E0B',
+  accentMuted: 'rgba(245, 158, 11, 0.15)',
+  success: '#10B981',
+  successMuted: 'rgba(16, 185, 129, 0.15)',
+  glass: 'rgba(255, 255, 255, 0.03)',
+  glassBorder: 'rgba(255, 255, 255, 0.08)',
 } as const;

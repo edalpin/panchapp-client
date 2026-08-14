@@ -1,5 +1,3 @@
-import * as SecureStore from 'expo-secure-store';
-
 const ACCESS_TOKEN_KEY = 'panchapp.accessToken';
 
 let inMemoryAccessToken: string | null = null;
@@ -13,17 +11,17 @@ export async function getAccessToken(): Promise<string | null> {
     return inMemoryAccessToken;
   }
 
-  const storedToken = await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
+  const storedToken = localStorage.getItem(ACCESS_TOKEN_KEY);
   inMemoryAccessToken = storedToken;
   return storedToken;
 }
 
 export async function setAccessToken(token: string): Promise<void> {
   inMemoryAccessToken = token;
-  await SecureStore.setItemAsync(ACCESS_TOKEN_KEY, token);
+  localStorage.setItem(ACCESS_TOKEN_KEY, token);
 }
 
 export async function clearAccessToken(): Promise<void> {
   inMemoryAccessToken = null;
-  await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
 }
