@@ -2,8 +2,8 @@ import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/clien
 import { CombinedGraphQLErrors } from '@apollo/client/errors';
 import { ErrorLink } from '@apollo/client/link/error';
 import { Observable } from '@apollo/client/utilities';
-import { refreshSessionSingleFlight } from '../features/auth/lib/refreshSession';
-import { env } from '../config/env';
+import { refreshSessionSingleFlight } from '@/features/auth/lib/refreshSession';
+import { env } from '@/config/env';
 
 const AUTH_OPERATIONS_WITHOUT_REFRESH = new Set(['LoginWithGoogle', 'RefreshSession', 'Logout']);
 

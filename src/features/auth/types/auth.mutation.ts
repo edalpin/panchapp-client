@@ -1,4 +1,4 @@
-import type { User } from './user';
+import type { User } from '@/features/auth/types/user';
 
 export type AuthPayload = {
   user: User;

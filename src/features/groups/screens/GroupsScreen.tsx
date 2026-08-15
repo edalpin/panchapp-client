@@ -2,11 +2,11 @@ import { useQuery } from '@apollo/client/react';
 import { Ionicons } from '@expo/vector-icons';
 import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { ScreenContainer } from '../../../components/ScreenContainer';
-import { colors } from '../../../theme/colors';
-import { MY_GROUPS } from '../api/groups.query';
-import type { MyGroupsQuery, MyGroupsQueryVariables } from '../types/groups.query';
-import { GroupListItem } from '../components/GroupListItem';
+import { ScreenContainer } from '@/components/ScreenContainer';
+import { colors } from '@/theme/colors';
+import { MY_GROUPS } from '@/features/groups/api/groups.query';
+import type { MyGroupsQuery, MyGroupsQueryVariables } from '@/features/groups/types/groups.query';
+import { GroupListItem } from '@/features/groups/components/GroupListItem';
 
 export function GroupsScreen() {
   const { data, error, loading, refetch } = useQuery<MyGroupsQuery, MyGroupsQueryVariables>(

@@ -1,7 +1,7 @@
 import { print } from '@apollo/client/utilities';
-import { env } from '../../../config/env';
-import { REFRESH_SESSION } from '../api/auth.mutation';
-import type { RefreshSessionResponse } from '../types/refreshSession';
+import { env } from '@/config/env';
+import { REFRESH_SESSION } from '@/features/auth/api/auth.mutation';
+import type { RefreshSessionResponse } from '@/features/auth/types/refreshSession';
 
 async function refreshSessionRequest(): Promise<void> {
   const response = await fetch(env.graphqlUrl, {

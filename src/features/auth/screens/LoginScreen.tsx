@@ -10,10 +10,10 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { AnimatedEntrance } from '../../../components/AnimatedEntrance';
-import { colors } from '../../../theme/colors';
-import { getAuthErrorMessage, useAuth } from '../context/AuthProvider';
-import { GoogleSignInButton } from '../components/GoogleSignInButton';
+import { AnimatedEntrance } from '@/components/AnimatedEntrance';
+import { colors } from '@/theme/colors';
+import { getAuthErrorMessage, useAuth } from '@/features/auth/context/AuthProvider';
+import { GoogleSignInButton } from '@/features/auth/components/GoogleSignInButton';
 
 export function LoginScreen() {
   const { isSigningIn, signInWithGoogle } = useAuth();

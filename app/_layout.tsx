@@ -1,10 +1,9 @@
 import 'react-native-reanimated';
-
 import { Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AuthProvider } from '../src/features/auth/context/AuthProvider';
-import { configureGoogleSignIn } from '../src/features/auth/lib/googleSignIn';
+import { AuthProvider } from '@/features/auth/context/AuthProvider';
+import { configureGoogleSignIn } from '@/features/auth/lib/googleSignIn';
 
 export default function RootLayout() {
   useEffect(() => {

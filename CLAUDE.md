@@ -40,3 +40,4 @@ panchapp-client/
 - **Features**: Each domain gets its own folder under `src/features/` with `api/`, `components/`, `screens/`, `types/`; auth additionally uses `context/`, `lib/`, `constants/`
 - **GraphQL**: Operation strings live in `src/features/*/api/*.query.ts` and `*.mutation.ts`; the shared Apollo client is in `src/graphql/client.ts`
 - **Shared code**: Cross-feature UI goes in `src/components/`; env vars in `src/config/env.ts`; theme in `src/theme/`
+- **Imports**: Use `@/` alias for anything under `src/` (e.g. `@/features/auth/context/AuthProvider`, `@/theme/colors`)

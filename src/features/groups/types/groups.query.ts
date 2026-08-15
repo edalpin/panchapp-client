@@ -1,4 +1,4 @@
-import type { GroupConnection } from './group';
+import type { GroupConnection } from '@/features/groups/types/group';
 
 export type MyGroupsQuery = {
   myGroups: GroupConnection;

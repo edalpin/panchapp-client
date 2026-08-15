@@ -2,12 +2,12 @@ import { useQuery } from '@apollo/client/react';
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { ScreenContainer } from '../../../components/ScreenContainer';
-import { colors } from '../../../theme/colors';
-import { ME } from '../../auth/api/auth.query';
-import type { MeQuery } from '../../auth/types/auth.query';
-import { useAuth } from '../../auth/context/AuthProvider';
-import { InteractiveCard } from '../components/InteractiveCard';
+import { ScreenContainer } from '@/components/ScreenContainer';
+import { colors } from '@/theme/colors';
+import { ME } from '@/features/auth/api/auth.query';
+import type { MeQuery } from '@/features/auth/types/auth.query';
+import { useAuth } from '@/features/auth/context/AuthProvider';
+import { InteractiveCard } from '@/features/home/components/InteractiveCard';
 
 export function HomeScreen() {
   const { signOut, user } = useAuth();

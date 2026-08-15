@@ -1,6 +1,6 @@
 import { Redirect, Stack } from 'expo-router';
-import { AuthLoadingView } from '../../src/features/auth/components/AuthLoadingView';
-import { useAuth } from '../../src/features/auth/context/AuthProvider';
+import { AuthLoadingView } from '@/features/auth/components/AuthLoadingView';
+import { useAuth } from '@/features/auth/context/AuthProvider';
 
 export default function AuthLayout() {
   const { status } = useAuth();

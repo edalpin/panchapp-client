@@ -2,8 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { Redirect, Tabs } from 'expo-router';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAuth } from '../../src/features/auth/context/AuthProvider';
-import { colors } from '../../src/theme/colors';
+import { useAuth } from '@/features/auth/context/AuthProvider';
+import { colors } from '@/theme/colors';
 
 export default function AppLayout() {
   const { status } = useAuth();

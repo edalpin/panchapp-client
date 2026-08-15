@@ -1,7 +1,10 @@
 import * as AuthSession from 'expo-auth-session';
 import * as Crypto from 'expo-crypto';
-import { env } from '../../../config/env';
-import { GOOGLE_AUTH_STATE_KEY, GOOGLE_OAUTH_DISCOVERY } from '../constants/googleSignIn';
+import { env } from '@/config/env';
+import {
+  GOOGLE_AUTH_STATE_KEY,
+  GOOGLE_OAUTH_DISCOVERY,
+} from '@/features/auth/constants/googleSignIn';
 
 export class GoogleSignInCancelledError extends Error {
   constructor() {

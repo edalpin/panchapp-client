@@ -8,7 +8,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
-import { colors } from '../../../theme/colors';
+import { colors } from '@/theme/colors';
 
 export function AuthLoadingView() {
   const scale = useSharedValue(0.92);

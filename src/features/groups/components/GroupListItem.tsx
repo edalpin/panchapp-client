@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { FadeInRight } from 'react-native-reanimated';
-import { colors } from '../../../theme/colors';
-import type { Group, GroupStatus } from '../types/group';
+import { colors } from '@/theme/colors';
+import type { Group, GroupStatus } from '@/features/groups/types/group';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 

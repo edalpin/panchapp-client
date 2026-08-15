@@ -9,22 +9,22 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { LOGIN_WITH_GOOGLE, LOGOUT } from '../api/auth.mutation';
-import { ME } from '../api/auth.query';
+import { LOGIN_WITH_GOOGLE, LOGOUT } from '@/features/auth/api/auth.mutation';
+import { ME } from '@/features/auth/api/auth.query';
 import type {
   LoginWithGoogleMutation,
   LoginWithGoogleMutationVariables,
-} from '../types/auth.mutation';
-import type { MeQuery } from '../types/auth.query';
-import type { AuthStatus } from '../types/auth.status';
-import type { User } from '../types/user';
+} from '@/features/auth/types/auth.mutation';
+import type { MeQuery } from '@/features/auth/types/auth.query';
+import type { AuthStatus } from '@/features/auth/types/auth.status';
+import type { User } from '@/features/auth/types/user';
 import {
   GoogleSignInCancelledError,
   hasGoogleRedirectCallback,
   signInWithGoogleIdToken,
   signOutFromGoogle,
-} from '../lib/googleSignIn';
-import { createApolloClient } from '../../../graphql/client';
+} from '@/features/auth/lib/googleSignIn';
+import { createApolloClient } from '@/graphql/client';
 
 type AuthContextValue = {
   status: AuthStatus;

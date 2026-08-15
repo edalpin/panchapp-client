@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, type ViewStyle } from 'react-native';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { colors } from '../../../theme/colors';
+import { colors } from '@/theme/colors';
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
