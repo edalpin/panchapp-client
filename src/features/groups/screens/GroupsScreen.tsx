@@ -31,7 +31,7 @@ export function GroupsScreen() {
       <ScreenContainer contentContainerStyle={styles.centered}>
         <View style={styles.errorContainer}>
           <View style={styles.errorIconContainer}>
-            <Ionicons color={colors.darkText} name="alert-circle" size={32} />
+            <Ionicons color={colors.text} name="alert-circle" size={32} />
           </View>
           <Text style={styles.errorTitle}>Could not load groups</Text>
           <Text style={styles.errorMessage}>{error.message}</Text>
@@ -58,7 +58,7 @@ export function GroupsScreen() {
         ListEmptyComponent={
           <Animated.View entering={FadeInDown.duration(600)} style={styles.emptyState}>
             <View style={styles.emptyIconContainer}>
-              <Ionicons color={colors.darkTextMuted} name="people-outline" size={48} />
+              <Ionicons color={colors.textMuted} name="people-outline" size={48} />
             </View>
             <Text style={styles.emptyTitle}>No groups yet</Text>
             <Text style={styles.emptySubtitle}>Groups you join or create will appear here.</Text>
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
   title: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 28,
     fontWeight: '800',
     letterSpacing: -0.5,
@@ -102,11 +102,11 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: colors.darkBorder,
+    borderColor: colors.border,
   },
   listContent: {
     paddingBottom: 24,
@@ -123,32 +123,32 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 20,
   },
   emptyTitle: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
     marginBottom: 8,
   },
   emptySubtitle: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 15,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 24,
   },
   createButton: {
-    backgroundColor: colors.darkText,
+    backgroundColor: colors.text,
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 100,
   },
   createButtonLabel: {
-    color: colors.darkBg,
+    color: colors.background,
     fontSize: 15,
     fontWeight: '700',
   },
@@ -160,37 +160,37 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    backgroundColor: colors.errorSurface,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
   },
   errorTitle: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 8,
   },
   errorMessage: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: colors.darkBorder,
+    borderColor: colors.border,
   },
   retryButtonPressed: {
     opacity: 0.8,
   },
   retryLabel: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 14,
     fontWeight: '600',
   },

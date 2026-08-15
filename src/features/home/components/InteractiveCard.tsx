@@ -28,10 +28,10 @@ export function InteractiveCard({ children, style, delay = 0 }: InteractiveCardP
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: colors.darkSurface,
+    backgroundColor: colors.surface,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: colors.darkBorder,
+    borderColor: colors.border,
     padding: 20,
   },
   cardPressed: {

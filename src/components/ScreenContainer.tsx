@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, type ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { colors } from '@/theme/colors';
+import { colors, gradients } from '@/theme/colors';
 
 type ScreenContainerProps = {
   children: ReactNode;
@@ -42,7 +42,7 @@ export function ScreenContainer({
   if (withGradient) {
     return (
       <View style={styles.wrapper}>
-        <LinearGradient colors={['#0A0A0A', '#000000']} style={StyleSheet.absoluteFill} />
+        <LinearGradient colors={[...gradients.screen]} style={StyleSheet.absoluteFill} />
         <View style={safeAreaStyle}>{inner}</View>
       </View>
     );
@@ -58,7 +58,7 @@ export function ScreenContainer({
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: colors.darkBg,
+    backgroundColor: colors.background,
   },
   root: {
     flex: 1,

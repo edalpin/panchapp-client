@@ -1,5 +1,7 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
-import { colors } from '@/theme/colors';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { colors, gradients } from '@/theme/colors';
 
 type GoogleSignInButtonProps = {
   onPress: () => void;
@@ -20,49 +22,77 @@ export function GoogleSignInButton({
       disabled={isDisabled}
       onPress={onPress}
       style={({ pressed }) => [
-        styles.button,
+        styles.container,
         isDisabled && styles.buttonDisabled,
-        pressed && !isDisabled && styles.buttonPressed,
         pressed && !isDisabled && styles.buttonScale,
       ]}
     >
-      {loading ? (
-        <ActivityIndicator color={colors.primary} />
-      ) : (
-        <Text style={styles.label}>Continue with Google</Text>
-      )}
+      <LinearGradient
+        colors={[...gradients.primaryButton]}
+        end={{ x: 1, y: 0 }}
+        start={{ x: 0, y: 0 }}
+        style={styles.gradient}
+      >
+        {loading ? (
+          <ActivityIndicator color={colors.onPrimary} />
+        ) : (
+          <View style={styles.content}>
+            <View style={styles.leftIcon}>
+              <Ionicons color={colors.onPrimary} name="logo-google" size={20} />
+            </View>
+            <Text style={styles.label}>Login</Text>
+            <Ionicons
+              color={colors.textSubtle}
+              name="sparkles-sharp"
+              size={16}
+              style={styles.rightIcon}
+            />
+          </View>
+        )}
+      </LinearGradient>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  button: {
-    alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderColor: '#e2e8f0',
-    borderRadius: 16,
-    borderWidth: 1,
-    justifyContent: 'center',
-    minHeight: 56,
-    paddingHorizontal: 24,
-    shadowColor: '#000',
-    shadowOffset: { height: 4, width: 0 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+  container: {
     width: '100%',
+    borderRadius: 30,
+    overflow: 'hidden',
+    shadowColor: colors.shadow,
+    shadowOffset: { height: 8, width: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 15,
+    elevation: 8,
+  },
+  gradient: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 64,
+    paddingHorizontal: 24,
+  },
+  content: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  leftIcon: {
+    marginRight: 10,
+  },
+  rightIcon: {
+    marginLeft: 6,
   },
   buttonDisabled: {
     opacity: 0.65,
   },
-  buttonPressed: {
-    backgroundColor: '#f8fafc',
-  },
   buttonScale: {
-    transform: [{ scale: 0.97 }],
+    transform: [{ scale: 0.98 }],
   },
   label: {
-    color: colors.text,
-    fontSize: 16,
-    fontWeight: '600',
+    color: colors.onPrimary,
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
 });

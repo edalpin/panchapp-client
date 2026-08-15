@@ -55,7 +55,7 @@ export function AuthLoadingView() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: colors.darkBg,
+    backgroundColor: colors.background,
     flex: 1,
     justifyContent: 'center',
   },

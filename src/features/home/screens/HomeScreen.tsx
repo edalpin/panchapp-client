@@ -48,7 +48,7 @@ export function HomeScreen() {
         <View style={styles.row}>
           <InteractiveCard delay={200} style={styles.halfCard}>
             <View style={styles.iconContainer}>
-              <Ionicons color={colors.darkText} name="people" size={20} />
+              <Ionicons color={colors.text} name="people" size={20} />
             </View>
             <Text style={styles.statNumber}>0</Text>
             <Text style={styles.statLabel}>Groups</Text>
@@ -56,7 +56,7 @@ export function HomeScreen() {
 
           <InteractiveCard delay={300} style={styles.halfCard}>
             <View style={styles.iconContainer}>
-              <Ionicons color={colors.darkText} name="flash" size={20} />
+              <Ionicons color={colors.text} name="flash" size={20} />
             </View>
             <Text style={styles.statNumber}>0</Text>
             <Text style={styles.statLabel}>Activity</Text>
@@ -72,7 +72,7 @@ export function HomeScreen() {
           }}
           style={({ pressed }) => [styles.signOutButton, pressed && styles.signOutButtonPressed]}
         >
-          <Ionicons color={colors.darkTextMuted} name="log-out-outline" size={18} />
+          <Ionicons color={colors.textMuted} name="log-out-outline" size={18} />
           <Text style={styles.signOutLabel}>Sign out</Text>
         </Pressable>
       </Animated.View>
@@ -94,25 +94,25 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: colors.darkBorder,
+    borderColor: colors.border,
   },
   avatarText: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 20,
     fontWeight: '700',
   },
   greeting: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 24,
     fontWeight: '800',
     letterSpacing: -0.5,
   },
   email: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 14,
     marginTop: 2,
   },
@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 12,
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -150,18 +150,18 @@ const styles = StyleSheet.create({
     backgroundColor: colors.accentMuted,
   },
   sectionTitle: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 18,
     fontWeight: '700',
   },
   statNumber: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 28,
     fontWeight: '800',
     marginTop: 8,
   },
   statLabel: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 14,
     fontWeight: '500',
   },
@@ -172,12 +172,12 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   emptyTitle: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 16,
     fontWeight: '600',
   },
   emptySubtitle: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 14,
     textAlign: 'center',
     marginTop: 4,
@@ -195,16 +195,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 100,
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     borderWidth: 1,
-    borderColor: colors.darkBorder,
+    borderColor: colors.border,
   },
   signOutButtonPressed: {
-    backgroundColor: colors.darkBorder,
+    backgroundColor: colors.border,
     transform: [{ scale: 0.98 }],
   },
   signOutLabel: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 15,
     fontWeight: '600',
   },

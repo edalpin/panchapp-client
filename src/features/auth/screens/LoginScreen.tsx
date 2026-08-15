@@ -10,8 +10,9 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { Ionicons } from '@expo/vector-icons';
 import { AnimatedEntrance } from '@/components/AnimatedEntrance';
-import { colors } from '@/theme/colors';
+import { colors, gradients } from '@/theme/colors';
 import { getAuthErrorMessage, useAuth } from '@/features/auth/context/AuthProvider';
 import { GoogleSignInButton } from '@/features/auth/components/GoogleSignInButton';
 
@@ -39,8 +40,8 @@ export function LoginScreen() {
   useEffect(() => {
     floatY.value = withRepeat(
       withSequence(
-        withTiming(-6, { duration: 2200, easing: Easing.inOut(Easing.ease) }),
-        withTiming(0, { duration: 2200, easing: Easing.inOut(Easing.ease) }),
+        withTiming(-10, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
+        withTiming(0, { duration: 2500, easing: Easing.inOut(Easing.ease) }),
       ),
       -1,
       true,
@@ -53,63 +54,84 @@ export function LoginScreen() {
 
   return (
     <View style={styles.root}>
-      <LinearGradient
-        colors={['#000000', '#111827', '#000000']}
-        end={{ x: 1, y: 1 }}
-        locations={[0, 0.5, 1]}
-        start={{ x: 0, y: 0 }}
-        style={StyleSheet.absoluteFill}
-      />
+      <LinearGradient colors={[...gradients.background]} style={StyleSheet.absoluteFill} />
 
-      <Image
-        accessibilityElementsHidden
-        importantForAccessibility="no"
-        source={require('../../../../assets/logo.png')}
-        style={styles.watermark}
-      />
+      <View style={[StyleSheet.absoluteFill, styles.ringsContainer]}>
+        <View style={[styles.ring, styles.ringSmall]} />
+        <View style={[styles.ring, styles.ringMedium]} />
+        <View style={[styles.ring, styles.ringLarge]} />
+
+        <View style={[styles.iconOnRing, { top: '35%', left: '15%' }]}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="calendar" size={16} color={colors.accent} />
+          </View>
+        </View>
+        <View style={[styles.iconOnRing, { top: '25%', right: '20%' }]}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="ticket" size={16} color={colors.accent} />
+          </View>
+        </View>
+        <View style={[styles.iconOnRing, { bottom: '45%', right: '10%' }]}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="location" size={16} color={colors.accent} />
+          </View>
+        </View>
+        <View style={[styles.iconOnRing, { bottom: '40%', left: '8%' }]}>
+          <View style={styles.iconCircle}>
+            <Ionicons name="people" size={16} color={colors.accent} />
+          </View>
+        </View>
+      </View>
 
       <View
         style={[
           styles.container,
-          { paddingBottom: Math.max(insets.bottom, 24), paddingTop: insets.top + 40 },
+          { paddingBottom: Math.max(insets.bottom, 24), paddingTop: insets.top + 20 },
         ]}
       >
         <View style={styles.hero}>
-          <AnimatedEntrance delay={0}>
-            <Animated.View style={[styles.logoShadow, logoFloatStyle]}>
-              <Image
-                accessibilityIgnoresInvertColors
-                source={require('../../../../assets/logo.png')}
-                style={styles.logo}
-              />
+          <AnimatedEntrance delay={200}>
+            <View style={styles.titleContainer}>
+              <Text style={styles.title}>Welcome to</Text>
+              <Text style={styles.logoName}>Panchapp</Text>
+              <Text style={styles.tagline}>Panchi-activities</Text>
+            </View>
+          </AnimatedEntrance>
+
+          <AnimatedEntrance delay={400}>
+            <Animated.View style={[styles.logoContainer, logoFloatStyle]}>
+              <View style={styles.logoOuter}>
+                <View style={styles.logoInner}>
+                  <Image
+                    accessibilityIgnoresInvertColors
+                    source={require('../../../../assets/logo.png')}
+                    style={styles.logo}
+                  />
+                </View>
+              </View>
             </Animated.View>
-          </AnimatedEntrance>
-
-          <AnimatedEntrance delay={120}>
-            <Text style={styles.title}>Panchapp</Text>
-          </AnimatedEntrance>
-
-          <AnimatedEntrance delay={220}>
-            <Text style={styles.tagline}>Elevate your events, simplify your planning.</Text>
           </AnimatedEntrance>
         </View>
 
-        <AnimatedEntrance delay={340} style={styles.cardWrap}>
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Welcome to Panchapp</Text>
-            <Text style={styles.cardSubtitle}>
-              Sign in to start creating memorable experiences.
-            </Text>
-
-            {errorMessage ? (
+        <View style={styles.footer}>
+          {errorMessage ? (
+            <AnimatedEntrance delay={0}>
               <View style={styles.errorBanner}>
+                <Ionicons
+                  name="alert-circle"
+                  size={18}
+                  color={colors.error}
+                  style={styles.errorIcon}
+                />
                 <Text style={styles.error}>{errorMessage}</Text>
               </View>
-            ) : null}
+            </AnimatedEntrance>
+          ) : null}
 
+          <AnimatedEntrance delay={600}>
             <GoogleSignInButton loading={isSigningIn} onPress={handleSignIn} />
-          </View>
-        </AnimatedEntrance>
+          </AnimatedEntrance>
+        </View>
       </View>
     </View>
   );
@@ -118,100 +140,129 @@ export function LoginScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: colors.darkBg,
+    backgroundColor: colors.background,
   },
-  watermark: {
-    bottom: -60,
-    height: 380,
-    opacity: 0.03,
+  ringsContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  ring: {
     position: 'absolute',
-    right: -80,
-    transform: [{ rotate: '-15deg' }],
-    width: 380,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: colors.ring,
+    aspectRatio: 1,
+  },
+  ringSmall: {
+    width: '60%',
+    opacity: 0.1,
+  },
+  ringMedium: {
+    width: '85%',
+    opacity: 0.07,
+  },
+  ringLarge: {
+    width: '110%',
+    opacity: 0.04,
+  },
+  iconOnRing: {
+    position: 'absolute',
+  },
+  iconCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.accentMuted,
+    borderWidth: 1,
+    borderColor: colors.accentBorder,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   container: {
     flex: 1,
-    justifyContent: 'space-between',
     paddingHorizontal: 32,
+    justifyContent: 'space-between',
+  },
+  logoName: {
+    color: colors.accent,
+    fontSize: 30,
+    fontWeight: '800',
+    textAlign: 'center',
+    letterSpacing: 1,
   },
   hero: {
     alignItems: 'center',
     flex: 1,
     justifyContent: 'center',
-    paddingTop: 40,
   },
-  logoShadow: {
-    marginBottom: 32,
-    shadowColor: '#000',
-    shadowOffset: { height: 20, width: 0 },
-    shadowOpacity: 0.4,
-    shadowRadius: 40,
-    elevation: 10,
-  },
-  logo: {
-    borderRadius: 40,
-    height: 140,
-    width: 140,
+  titleContainer: {
+    alignItems: 'center',
+    marginBottom: 40,
   },
   title: {
-    color: colors.darkText,
-    fontSize: 42,
-    fontWeight: '900',
-    letterSpacing: -1,
-    marginBottom: 12,
+    color: colors.text,
+    fontSize: 28,
+    fontWeight: '400',
     textAlign: 'center',
   },
   tagline: {
-    color: colors.darkTextMuted,
-    fontSize: 18,
-    lineHeight: 26,
-    maxWidth: 300,
+    color: colors.textMuted,
+    fontSize: 16,
     textAlign: 'center',
     fontWeight: '500',
   },
-  cardWrap: {
-    width: '100%',
+  logoContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  card: {
-    backgroundColor: colors.darkSurface,
-    borderColor: colors.darkBorder,
-    borderRadius: 32,
+  logoOuter: {
+    width: 220,
+    height: 280,
+    borderRadius: 30,
+    backgroundColor: colors.glass,
     borderWidth: 1,
-    gap: 20,
-    paddingHorizontal: 28,
-    paddingVertical: 32,
-    shadowColor: '#000',
-    shadowOffset: { height: 12, width: 0 },
-    shadowOpacity: 0.2,
-    shadowRadius: 24,
-    elevation: 8,
-    marginBottom: 20,
+    borderColor: colors.glassBorder,
+    padding: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  cardTitle: {
-    color: colors.darkText,
-    fontSize: 26,
-    fontWeight: '800',
-    textAlign: 'center',
+  logoInner: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
+    backgroundColor: colors.glassInner,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
-  cardSubtitle: {
-    color: colors.darkTextMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 8,
-    textAlign: 'center',
+  logo: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+  },
+  footer: {
+    width: '100%',
+    paddingBottom: 20,
   },
   errorBanner: {
-    backgroundColor: 'rgba(220, 38, 38, 0.1)',
-    borderRadius: 16,
+    backgroundColor: colors.errorSurface,
+    borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: 'rgba(220, 38, 38, 0.2)',
+    borderColor: colors.errorBorder,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  errorIcon: {
+    marginRight: 8,
   },
   error: {
-    color: '#f87171',
+    color: colors.error,
     fontSize: 14,
-    lineHeight: 20,
-    textAlign: 'center',
+    fontWeight: '500',
+    flex: 1,
   },
 });

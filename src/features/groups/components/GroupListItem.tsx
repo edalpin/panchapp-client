@@ -28,7 +28,7 @@ export function GroupListItem({ group, index }: GroupListItemProps) {
     >
       <View style={styles.groupIconContainer}>
         <Ionicons
-          color={group.isPersonal ? colors.accent : colors.darkText}
+          color={group.isPersonal ? colors.accent : colors.text}
           name={group.isPersonal ? 'person' : 'people'}
           size={22}
         />
@@ -48,23 +48,23 @@ export function GroupListItem({ group, index }: GroupListItemProps) {
           <View
             style={[
               styles.statusIndicator,
-              { backgroundColor: isActive ? colors.success : colors.darkTextMuted },
+              { backgroundColor: isActive ? colors.success : colors.textMuted },
             ]}
           />
           <Text style={styles.statusLabel}>{formatStatus(group.status)}</Text>
         </View>
       </View>
-      <Ionicons color={colors.darkTextMuted} name="chevron-forward" size={20} />
+      <Ionicons color={colors.textMuted} name="chevron-forward" size={20} />
     </AnimatedPressable>
   );
 }
 
 const styles = StyleSheet.create({
   groupCard: {
-    backgroundColor: colors.darkSurface,
+    backgroundColor: colors.surface,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: colors.darkBorder,
+    borderColor: colors.border,
     padding: 16,
     marginBottom: 12,
     flexDirection: 'row',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 14,
-    backgroundColor: colors.darkSurfaceElevated,
+    backgroundColor: colors.surfaceElevated,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   groupName: {
-    color: colors.darkText,
+    color: colors.text,
     fontSize: 17,
     fontWeight: '700',
     flexShrink: 1,
@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
   },
   statusLabel: {
-    color: colors.darkTextMuted,
+    color: colors.textMuted,
     fontSize: 13,
     fontWeight: '500',
   },
