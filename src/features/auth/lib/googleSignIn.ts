@@ -1,12 +1,7 @@
 import * as AuthSession from 'expo-auth-session';
 import * as Crypto from 'expo-crypto';
-import { env } from '../config/env';
-
-const discovery = {
-  authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth',
-};
-
-const AUTH_STATE_KEY = 'panchapp.google_auth_state';
+import { env } from '../../../config/env';
+import { GOOGLE_AUTH_STATE_KEY, GOOGLE_OAUTH_DISCOVERY } from '../constants/googleSignIn';
 
 export class GoogleSignInCancelledError extends Error {
   constructor() {
@@ -42,8 +37,8 @@ export async function signInWithGoogleIdToken(): Promise<string> {
   const params = parseHashParams(window.location.hash);
 
   if (params.id_token || params.error) {
-    const expectedState = sessionStorage.getItem(AUTH_STATE_KEY);
-    sessionStorage.removeItem(AUTH_STATE_KEY);
+    const expectedState = sessionStorage.getItem(GOOGLE_AUTH_STATE_KEY);
+    sessionStorage.removeItem(GOOGLE_AUTH_STATE_KEY);
     clearAuthParamsFromUrl();
 
     if (params.error) {
@@ -78,9 +73,9 @@ export async function signInWithGoogleIdToken(): Promise<string> {
     usePKCE: false,
   });
 
-  sessionStorage.setItem(AUTH_STATE_KEY, request.state);
+  sessionStorage.setItem(GOOGLE_AUTH_STATE_KEY, request.state);
 
-  const authUrl = await request.makeAuthUrlAsync(discovery);
+  const authUrl = await request.makeAuthUrlAsync(GOOGLE_OAUTH_DISCOVERY);
   window.location.assign(authUrl);
 
   // The page navigates away; keep the caller pending until reload completes.
