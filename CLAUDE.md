@@ -36,6 +36,7 @@ panchapp-client/
 
 ### Conventions
 
+- **Screens as assemblers**: Screen components compose layout only — no data fetching or business logic. Each section component owns its own GraphQL queries (e.g. `HomeHeader` fetches `ME`, `GroupsSection` fetches `MY_GROUPS`). Pass props only for presentation concerns like `delay`, not for data.
 - **Routing**: `app/` files stay thin — they re-export screen components from `src/features/*/screens/` (example: `app/(app)/home.tsx` → `HomeScreen`)
 - **Features**: Each domain gets its own folder under `src/features/` with `api/`, `components/`, `screens/`, `types/`; auth additionally uses `context/`, `lib/`, `constants/`
 - **GraphQL**: Operation strings live in `src/features/*/api/*.query.ts` and `*.mutation.ts`; the shared Apollo client is in `src/graphql/client.ts`

@@ -5,16 +5,12 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ScreenContainer } from '@/components/ScreenContainer';
 import { colors } from '@/theme/colors';
 import { MY_GROUPS } from '@/features/groups/api/groups.query';
-import type { MyGroupsQuery, MyGroupsQueryVariables } from '@/features/groups/types/groups.query';
 import { GroupListItem } from '@/features/groups/components/GroupListItem';
 
 export function GroupsScreen() {
-  const { data, error, loading, refetch } = useQuery<MyGroupsQuery, MyGroupsQueryVariables>(
-    MY_GROUPS,
-    {
-      variables: { first: 50 },
-    },
-  );
+  const { data, error, loading, refetch } = useQuery(MY_GROUPS, {
+    variables: { first: 50 },
+  });
 
   const groups = data?.myGroups.nodes ?? [];
 
