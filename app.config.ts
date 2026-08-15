@@ -12,8 +12,8 @@ const config: ExpoConfig = {
   web: {
     output: 'single',
     display: 'standalone',
-    themeColor: '#000000',
-    backgroundColor: '#000000',
+    themeColor: '#1e293b',
+    backgroundColor: '#1e293b',
     orientation: 'portrait',
     barStyle: 'black-translucent',
     name: 'Panchapp',

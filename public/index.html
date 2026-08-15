@@ -13,25 +13,34 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Panchapp" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1e293b" media="(prefers-color-scheme: dark)" />
     <title>%WEB_TITLE%</title>
     <!-- The `react-native-web` recommended style reset: https://necolas.github.io/react-native-web/docs/setup/#root-element -->
     <style id="expo-reset">
-      /* These styles make the body full-height */
+      /* These styles make the body full-height and extend into the iOS notch area */
       html,
       body {
-        height: 100%;
+        min-height: 100%;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+      }
+      html {
+        background-color: #1e293b;
       }
       /* These styles disable body scrolling if you are using <ScrollView> */
       body {
         overflow: hidden;
-        background-color: #000000;
+        background-color: #1e293b;
       }
       /* These styles make the root element full-height */
       #root {
         display: flex;
-        height: 100%;
+        min-height: 100%;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
         flex: 1;
+        background-color: #1e293b;
       }
     </style>
   </head>
